@@ -1,0 +1,17 @@
+[project]
+name = "vision-foundation-model-feasibility"
+version = "0.1.0"
+description = "In this repo we will explore the feasibility of using vision foundation models for quality control in industrial applications."
+readme = "README.md"
+authors = [
+    { name = "imran-git-000", email = "imran.chouybat1@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+vision-foundation-model-feasibility = "vision_foundation_model_feasibility:main"
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
