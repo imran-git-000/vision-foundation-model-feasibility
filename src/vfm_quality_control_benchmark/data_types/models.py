@@ -1,10 +1,11 @@
 from dataclasses import dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
 
-from vfm_quality_control_benchmark.data_types.enums import ModelName
+if TYPE_CHECKING:
+    from vfm_quality_control_benchmark.data_types.enums import ModelName
 
 
 @dataclass
