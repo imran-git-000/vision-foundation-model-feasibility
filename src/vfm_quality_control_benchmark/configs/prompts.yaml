@@ -1,0 +1,70 @@
+# Text prompts per dataset class: {dataset: {class name as in the COCO json: [prompts]}}.
+# Fixed from the class names alone, before looking at any predictions:
+#   - informative names: lower-cased, underscores/CamelCase split, s_/t_ prefixes dropped
+#   - Casting is Portuguese: Inclusoes -> inclusion, Rechupe -> shrinkage
+#   - uninformative names (Capacitor 0, Hemisphere Defect-A..D, PCB_2 defect1..7,
+#     Screw defect, Cylinder RCS): the generic set
+# A prompt listed under several classes is scored once per class (the model
+# cannot tell those classes apart by name).
+
+generic: &generic [defect, scratch, dent, crack, stain]
+
+vision:
+  Cable:
+    break: [break]
+    thunderbolt: [thunderbolt]
+  Capacitor:
+    '0': *generic
+  Casting:
+    Inclusoes: [inclusion]
+    Rechupe: [shrinkage]
+  Console:
+    Collision: [collision]
+    Dirty: [dirty]
+    Gap: [gap]
+    Scratch: [scratch]
+  Cylinder:
+    Chip: [chip]
+    PistonMiss: [piston miss]
+    Porosity: [porosity]
+    RCS: *generic
+  Electronics:
+    damage: [damage]
+  Groove:
+    s_burr: [burr]
+    s_scratch: [scratch]
+  Hemisphere:
+    Defect-A: *generic
+    Defect-B: *generic
+    Defect-C: *generic
+    Defect-D: *generic
+  Lens:
+    Fiber: [fiber]
+    Flash Particle: [flash particle]
+    Hole: [hole]
+    Surface Damage: [surface damage]
+    Tear: [tear]
+  PCB_1:
+    missing_hole: [missing hole]
+    mouse_bite: [mouse bite]
+    open_circuit: [open circuit]
+    short: [short]
+    spur: [spur]
+    spurious_copper: [spurious copper]
+  PCB_2:
+    defect1: *generic
+    defect2: *generic
+    defect3: *generic
+    defect4: *generic
+    defect5: *generic
+    defect6: *generic
+    defect7: *generic
+  Ring:
+    t_contamination: [contamination]
+    t_scratch: [scratch]
+    unfinished_surface: [unfinished surface]
+  Screw:
+    defect: *generic
+  Wood:
+    impurities: [impurities]
+    pits: [pits]

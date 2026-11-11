@@ -47,8 +47,9 @@ On disk (checked 2026-11-10):
 On disk (checked 2026-11-10):
 
 - Paper: `data/vision_datasets/VISION Datasets.pdf`; dataset card: `data/vision_datasets/README.md`.
-- Each dataset is a `<Name>.tar.gz` archive. Because `data/` is read-only, extract to `outputs/` (or read members straight from the tarball). Archives contain `<Name>/{train,val,inference}/_annotations.coco.json` plus `.jpg` images.
-- Archives include macOS `._*` AppleDouble files next to every image; skip them.
+- Extracted in place (2026-11-11; the `.tar.gz` archives are gone): `data/vision_datasets/<Name>/{train,val,inference}/_annotations.coco.json` plus `.jpg` images. Read images via the JSON `file_name`s, never by globbing: every folder also contains macOS `._*` AppleDouble files.
+- **Console is incompletely extracted**: `train/` is empty (no JSON), and `inference/` lacks 861 of 3,799 images. `Console/val` is complete. All other datasets are complete.
+- `val` has 1,014 images and 44 classes in total, matching the paper's 44 defect types. Uninformative or non-English class names: Capacitor `0`, Hemisphere `Defect-A`…`D`, PCB_2 `defect1`…`7`, Screw `defect`, Casting `Inclusoes`/`Rechupe` (Portuguese for inclusions/shrinkage). Groove and Ring have `s_`/`t_` prefixes.
 - **There are no test labels**: `inference/` lists test images plus discarded ones, with zero annotations. Evaluate on `val` and say so in the results. That also means `val` cannot be used for prompt or threshold selection without contaminating the reported numbers. Ask before making any such choice.
 - Class names vary from informative (Cable: `break`, `thunderbolt`) to generic (Screw: `defect`).
 
@@ -63,10 +64,11 @@ On disk (checked 2026-11-10):
 
 - Use the defect class names from each dataset's annotations as prompts, plus a generic set (`defect`, `scratch`, `dent`, `crack`, `stain`) for classes with uninformative names (for example `Defect1`, `Defect-A`).
 - Keep all prompts in one config file, never hard-coded in scripts, and save the prompts used alongside every result.
+- That file is `src/vfm_quality_control_benchmark/configs/prompts.yaml`: per dataset, class name → prompts. Its header records the cleaning rules: lower-case, split `_`/CamelCase, drop `s_`/`t_` prefixes, translate Casting from Portuguese, and use the generic set for uninformative classes. A prompt shared by several classes (the generic set on Hemisphere or PCB_2) is scored once per class, since those classes can't be told apart by name. `prompt_to_categories` fails if the config's class names don't exactly match the dataset's.
 
 ### Turning predictions into metrics
 
-- VISION: export predictions in COCO instance-segmentation format and score with `pycocotools`.
+- VISION: export predictions in COCO instance-segmentation format and score with `pycocotools`. This is implemented in `scripts/run_vision.py`, `datasets/vision.py` and `metrics/coco.py`. Subset runs restrict `COCOeval` to the predicted image IDs. Metric checks live in `tests/test_vision_metrics.py`: ground truth as predictions must give 1.0, and empty or wrong-class predictions 0. Note that with `score_threshold: 0` and 100 detections per image, mAR@100 picks up many near-zero-confidence masks, so always report mAP (and AP50) next to it.
 - 3CAD: build a per-pixel anomaly map as the maximum mask score over all predicted masks (0 where nothing is predicted); the image score is the maximum of that map. Compute the four metrics from those.
 
 ## Repo layout

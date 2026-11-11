@@ -117,6 +117,13 @@ class ModelInitConfig(Config):
     )
 
 
+class PromptsConfig(Config):
+    """configs/prompts.yaml: per dataset, class name -> text prompts."""
+
+    generic: list[str]
+    vision: dict[str, dict[str, list[str]]]
+
+
 class ModelConfig(Config):
     """One entry of configs/models.yaml."""
 

@@ -31,3 +31,11 @@ uv run python scripts/smoke.py --model sam3 \
 ```
 
 `--model yoloe` for YOLOE. Interactive: `notebooks/explorer.ipynb`.
+
+VISION evaluation (results in `outputs/vision/<model>/<dataset>/`):
+
+```bash
+uv run python scripts/run_vision.py --model sam3 --dataset Cable --limit 50 \
+  --models-config src/vfm_quality_control_benchmark/configs/models.yaml \
+  --prompts-config src/vfm_quality_control_benchmark/configs/prompts.yaml
+```
