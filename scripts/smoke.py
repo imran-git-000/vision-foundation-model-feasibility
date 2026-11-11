@@ -12,14 +12,13 @@ from vfm_quality_control_benchmark.utils.tasks import to_anomaly_map
 
 def main() -> None:
     ap = argparse.ArgumentParser()
+    ap.add_argument('--model', required=True, type=ModelName)
     ap.add_argument('--image', required=True, type=Path)
     ap.add_argument('--prompt', action='append', required=True)
     ap.add_argument('--config', required=True, type=Path)
     args = ap.parse_args()
 
-    model = Factory.build_model(
-        Factory.load_config(ModelName.SAM3, args.config)
-    )
+    model = Factory.build_model(Factory.load_config(args.model, args.config))
     pred = model.predict(Image.open(args.image), args.prompt)
     _, image_score = to_anomaly_map(pred)
 

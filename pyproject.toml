@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "clip",
     "dotenv>=0.9.9",
     "ipykernel>=7.3.0",
     "ipywidgets>=8.1.9",
@@ -21,6 +22,7 @@ dependencies = [
     "torch>=2.13.0",
     "torchvision>=0.28.0",
     "transformers>=5.22.2",
+    "ultralytics>=8.4.210",
 ]
 
 # optional grouped dependencies that are installed only when explicitly requested
@@ -64,3 +66,4 @@ explicit = true
 [tool.uv.sources]
 torch = [{ index = "pytorch-cu130" }]
 torchvision = [{ index = "pytorch-cu130" }]
+clip = { git = "https://github.com/ultralytics/CLIP.git", rev = "7ffa84b3bfa40c42ecc1c77147a855e69cb2dd40" }

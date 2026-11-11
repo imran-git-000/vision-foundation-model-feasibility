@@ -1,11 +1,13 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Literal
+from typing import Literal
 
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
 
-if TYPE_CHECKING:
-    from vfm_quality_control_benchmark.data_types.enums import ModelName
+# Runtime import: pydantic needs ModelName to validate ModelConfig.name.
+from vfm_quality_control_benchmark.data_types.enums import (  # noqa: TC001
+    ModelName,
+)
 
 
 @dataclass
@@ -108,6 +110,11 @@ class ModelInitConfig(Config):
     revision: str = 'main'
     device: str | None = None
     dtype: Literal['float32', 'bfloat16', 'float16'] = 'float32'
+    image_size: int | None = Field(
+        default=None,
+        gt=0,
+        description='Model input size in px; None = model default.',
+    )
 
 
 class ModelConfig(Config):

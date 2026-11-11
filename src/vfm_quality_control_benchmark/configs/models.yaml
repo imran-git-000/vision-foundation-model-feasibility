@@ -9,3 +9,15 @@ sam3:
     score_threshold: 0.0
     mask_threshold: 0.5
     max_detections: 100
+
+yoloe:
+  name: yoloe
+  init:
+    model_id: checkpoints/yoloe-26x-seg.pt
+    device: cuda
+    dtype: float32
+    image_size: 1024
+  predict:
+    score_threshold: 0.0
+    mask_threshold: 0.5
+    max_detections: 100

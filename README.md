@@ -17,15 +17,17 @@ SAM 3 weights are gated: request access at https://huggingface.co/facebook/sam3,
 uv run hf auth login      # read token
 ```
 
+YOLOE weights download on first use to `checkpoints/`; its text encoder (`mobileclip2_b.ts`) to the working directory.
+
 Datasets go in `data/3CAD/` and `data/vision_datasets/`.
 
 ## Usage
 
 ```bash
-uv run python scripts/smoke_sam3.py \
+uv run python scripts/smoke.py --model sam3 \
   --config src/vfm_quality_control_benchmark/configs/models.yaml \
   --image data/3CAD/3CAD/Aluminum_Camera_Cover/test/scratche/000001.png \
   --prompt scratch
 ```
 
-Interactive: `notebooks/sam3_explorer.ipynb`.
+`--model yoloe` for YOLOE. Interactive: `notebooks/explorer.ipynb`.

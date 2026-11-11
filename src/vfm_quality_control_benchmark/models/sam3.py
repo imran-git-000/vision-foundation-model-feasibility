@@ -21,12 +21,16 @@ if TYPE_CHECKING:
 class Sam3Segmenter:
     def __init__(
         self,
+        *,
         model_id: str = 'facebook/sam3',
         revision: str = 'main',
         device: str | None = None,
         dtype: str = 'float32',
+        image_size: int | None = None,
         settings: PredictSettings | None = None,
     ) -> None:
+        if image_size not in (None, 1008):
+            raise ValueError('SAM 3 runs at a fixed 1008 px input size')
         self.model_id = model_id
         self.revision = revision
         self.device = torch.device(

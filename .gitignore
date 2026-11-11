@@ -143,3 +143,7 @@ reports/
 runs/
 # predictions, metrics, figures (see CLAUDE.md)
 outputs/
+
+# model weights and text encoders (Ultralytics downloads to the working directory)
+*.pt
+*.ts

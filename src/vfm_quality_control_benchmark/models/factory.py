@@ -7,6 +7,7 @@ import yaml
 from vfm_quality_control_benchmark.data_types.enums import ModelName
 from vfm_quality_control_benchmark.data_types.models import ModelConfig
 from vfm_quality_control_benchmark.models.sam3 import Sam3Segmenter
+from vfm_quality_control_benchmark.models.yoloe import YoloeSegmenter
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -24,6 +25,7 @@ class Factory:
         dict[ModelName, Callable[..., TextPromptedSegmenter]]
     ] = {
         ModelName.SAM3: Sam3Segmenter,
+        ModelName.YOLOE: YoloeSegmenter,
     }
 
     @staticmethod
