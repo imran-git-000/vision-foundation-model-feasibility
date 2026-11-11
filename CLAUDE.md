@@ -34,6 +34,8 @@ On disk (checked 2026-11-10):
 - Folders use full names, not the paper's abbreviations: ACC=`Aluminum_Camera_Cover`, AI=`Aluminum_Ipad`, AMF=`Aluminum_Middle_Frame`, ANI=`Aluminum_New_Ipad`, ANMF=`Aluminum_New_Middle_Frame`, AP=`Aluminum_Pc`, CS=`Copper_Stator`, IS=`Iron_Stator`.
 - **Defect folders come in duplicate pairs**: a pinyin name and an English name holding byte-identical images (e.g. `aotu`=`uneven`, `huashang`=`scratche`, `yashang`=`bruise`, `zangwu`=`dirt`). The test split has 27,620 PNG files but only 16,496 unique by MD5, against 16,546 in the paper. Deduplicate by content hash before scoring, or every metric double-counts. Normal (5,084) and train (10,493) counts match the paper. Also present: `Multiple-defects` folders and typos like `scratche`.
 - Use the English folder name as the prompt, never the pinyin one.
+- Test images are **JPEG files with a `.png` extension**. Ground-truth masks are real 8-bit grayscale PNGs. Open both by content (PIL does this), not by extension.
+- Image sizes vary within each category, up to 1024 px on the long side. SAM 3 runs at 1008 px internally, so it sees 3CAD at roughly native resolution. Some VISION datasets go up to about 3000 px (PCB_1) and get downscaled about 3×.
 
 
 ### VISION Datasets (arXiv 2306.07890)
@@ -52,9 +54,9 @@ On disk (checked 2026-11-10):
 
 ## Models
 
-- **SAM 3**: prompt with text (defect names). Mask scores are the confidence used for ranking and for building anomaly maps.
-- **YOLOE**: open-vocabulary segmentation variant, prompted with the same text prompts as SAM 3 so the comparison is fair.
-- Both are available through the `ultralytics` package. Check the current Ultralytics docs for the exact model names, weights and prompt API before coding; do not rely on memory, these change often. SAM 3 weights may need a Hugging Face access request: if a download fails for that reason, stop and tell me.
+- **SAM 3**: prompt with text (defect names). Mask scores are the confidence used for ranking and for building anomaly maps. Runs through Hugging Face Transformers (`Sam3Model` / `Sam3Processor`, checkpoint `facebook/sam3`), wrapped in `src/vfm_quality_control_benchmark/models/sam3.py`. Check the current Transformers docs for the API before changing it; do not rely on memory. The checkpoint is gated: if a download fails for access reasons, stop and tell me.
+- **YOLOE**: open-vocabulary segmentation variant, prompted with the same text prompts as SAM 3 so the comparison is fair. Do not use Ultralytics. The backend is not chosen yet; ask before picking one.
+- Every model wrapper implements the same interface (`models/base.py`: `predict(image, prompts) -> InstancePredictions`, `metadata()`). Dataset formats (3CAD anomaly maps, VISION COCO results) are built from that in `tasks.py`, never inside a wrapper.
 - Zero-shot means no training or tuning on either dataset. Do not select prompts or thresholds on the test split; use VISION validation for any such choice and report it.
 
 ### Prompts
@@ -71,8 +73,8 @@ On disk (checked 2026-11-10):
 
 ```
 data/            datasets and papers (read-only)
-configs/         prompts and run settings
-src/vision_foundation_model_feasibility/   package: dataset loaders, model wrappers, metrics
+src/vfm_quality_control_benchmark/   package: dataset loaders, model wrappers, metrics
+src/vfm_quality_control_benchmark/configs/   prompts and run settings (YAML, read via importlib.resources)
 scripts/         entry points (one per model/dataset run)
 outputs/         predictions, metrics, figures (git-ignored)
 results/         final tables (CSV + Markdown), committed
@@ -82,7 +84,7 @@ So far only `data/` and a stub package exist (`main()` prints a greeting); the r
 
 ## Environment and commands
 
-The project is a `uv` project (`pyproject.toml`, `uv_build` backend, src layout). `.python-version` pins **3.14**; uv also has 3.12 installed. Before pinning, check that `torch` and `ultralytics` publish wheels for 3.14. If they don't, ask before lowering `requires-python`. There is no system `python` on PATH, so always go through uv:
+The project is a `uv` project (`pyproject.toml`, `uv_build` backend, src layout). Python is **3.14** (`.python-version`), by decision; do not lower it. PyTorch comes from the CUDA 13.0 index (`pytorch-cu130`) configured in `pyproject.toml` (the GPU is an RTX 5000 Ada with 32 GB). There is no system `python` on PATH, so always go through uv:
 
 ```
 uv sync                                  # create .venv from pyproject/uv.lock
@@ -103,7 +105,7 @@ No test or lint tooling is configured yet.
 - Fix random seeds and log model name, weights file, image resolution, prompts and package versions with each run.
 - Save 10–20 qualitative overlays (image, ground truth, prediction) per dataset, including failures.
 - Ask before long or expensive jobs (full-dataset runs, large downloads) and before adding a heavy dependency.
-- Python with `ultralytics`, `torch`, `pycocotools`, `scikit-learn`, `numpy`, `opencv-python`. Pin versions in `pyproject.toml` / `uv.lock` and export them to `requirements.txt`.
+- Python with `torch`, `transformers`, `pycocotools`, `scikit-learn`, `numpy`, `opencv-python`. Pin versions in `pyproject.toml` / `uv.lock` and export them to `requirements.txt`.
 
 ## Deliverables
 

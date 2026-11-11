@@ -141,3 +141,5 @@ reports/
 
 # tensorboard runs
 runs/
+# predictions, metrics, figures (see CLAUDE.md)
+outputs/
