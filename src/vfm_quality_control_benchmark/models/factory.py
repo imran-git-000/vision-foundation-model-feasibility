@@ -35,9 +35,11 @@ class Factory:
         return ModelConfig.model_validate(entries[name.value])
 
     @classmethod
-    def build_model(cls, cfg: ModelConfig) -> TextPromptedSegmenter:
-        """Instantiate the wrapper registered for `cfg.name`."""
-        model_cls = cls._registry.get(cfg.name)
+    def build_model(cls, config: ModelConfig) -> TextPromptedSegmenter:
+        """Instantiate the wrapper registered for `config.name`."""
+        model_cls = cls._registry.get(config.name)
         if model_cls is None:
-            raise NotImplementedError(f'no wrapper registered for {cfg.name}')
-        return model_cls(settings=cfg.predict, **cfg.init.model_dump())
+            raise NotImplementedError(
+                f'no wrapper registered for {config.name}'
+            )
+        return model_cls(settings=config.predict, **config.init.model_dump())

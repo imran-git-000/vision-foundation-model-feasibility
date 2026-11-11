@@ -3,6 +3,7 @@ sam3:
   init:
     model_id: facebook/sam3
     revision: main
+    device: cuda
     dtype: float32
   predict:
     score_threshold: 0.0
