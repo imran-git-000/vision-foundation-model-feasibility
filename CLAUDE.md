@@ -74,7 +74,7 @@ On disk (checked 2026-11-10):
 ```
 data/            datasets and papers (read-only)
 src/vfm_quality_control_benchmark/   package: dataset loaders, model wrappers, metrics
-src/vfm_quality_control_benchmark/configs/   prompts and run settings (YAML, read via importlib.resources)
+src/vfm_quality_control_benchmark/configs/   prompts and run settings (YAML; paths come from `.env`, e.g. `MODELS_CONFIG_PATH`, read with `env.env_path`)
 scripts/         entry points (one per model/dataset run)
 outputs/         predictions, metrics, figures (git-ignored)
 results/         final tables (CSV + Markdown), committed

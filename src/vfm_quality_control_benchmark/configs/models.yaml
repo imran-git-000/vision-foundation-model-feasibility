@@ -1,0 +1,10 @@
+sam3:
+  name: sam3
+  init:
+    model_id: facebook/sam3
+    revision: main
+    dtype: float32
+  predict:
+    score_threshold: 0.0
+    mask_threshold: 0.5
+    max_detections: 100
